@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css">
+
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <meta charset="utf-8">
+    <title>MyProject</title>
+</head>
+<body>
+    <div class="container">
+        <div class="row text-center">
+            <h1><%=title%></h1>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-striped">
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Created At</th>
+                    </tr>
+                    <%for(let i=0; i<employees.length;i++){%>
+                    <tr>
+                        <td><%=employees[i].id%></td>
+                        <td><%=employees[i].name%></td>
+                        <td><%=Date(employees[i].createdAt)%></td>
+                    </tr>
+                    <%}%>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

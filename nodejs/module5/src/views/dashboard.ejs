@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <link rel="stylesheet" href="dashboard.css">
+    <meta charset="utf-8">
+    <title>MyProject</title>
+</head>
+<body>
+<div class="container">
+    <div class="row text-center">
+        <h3>***Order Details***</h3>
+    </div>
+    <div>
+        <table class="table-striped">
+            <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Email</th>
+                <th>Items Ordered</th>
+                <th>Status</th>
+            </tr>
+            <%for (let i = 0; i < docs.length; i++){%>
+            <tr>
+                <td><%=i+1%></td>
+                <td><%=docs[i].name%></td>
+                <td><%=docs[i].address%></td>
+                <td><%=docs[i].email%></td>
+                <td><%=docs[i].orders%></td>
+                <td><%=status[i]%></td>
+            </tr>
+            <%}%>
+        </table>
+    </div>
+</div>
+</body>

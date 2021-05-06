@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <link rel="stylesheet" href="main.css">
+    <meta charset="utf-8">
+    <title>MyProject</title>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div>
+            <form action="getUserInput" method="post">
+                <table>
+                    <tr>
+                        <th></th>
+                        <th>Shopping Item</th>
+                        <th>Price</th>
+                        <th>Check To Order</th>
+                    </tr>
+                    <%for (let i = 0; i < items.length; i++){%>
+                    <tr>
+                        <td><%=i+1%></td>
+                        <td><%=items[i].name%></td>
+                        <td>$<%=items[i].price%></td>
+                        <td><input name="item" id="<%=i%>" value="<%=items[i].name%>" type="checkbox"></td>
+                    </tr>
+                    <%}%>
+                </table>
+                <table>
+                    <tr>
+                        <th>Name: </th>
+                        <td><input name="name" type="text" required pattern="[A-Za-z ]*"></td>
+                    </tr>
+                    <tr>
+                        <th>Address: </th>
+                        <td><input name="address" type="text" required pattern="[0-9A-Za-z# ]*"></td>
+                    </tr>
+                    <tr>
+                        <th>Email: </th>
+                        <td><input name="email" type="text" required></td>
+                    </tr>
+                    <tr>
+                        <td><input type="submit" value="Submit"></td>
+                        <td></td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>
+</body>

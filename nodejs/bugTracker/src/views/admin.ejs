@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="./src/public/css/bootstrap.min.css">
+    <script src="./src/public/js/bootstrap.min.js"></script>
+    <script src="./src/public/js/jquery-3.6.0.min.js"></script>
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+
+    <!-- jQuery -->
+    <script type="text/javascript" charset="utf8" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+
+    <!-- DataTables -->
+    <script type="text/javascript" charset="utf8" src="http://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+    <meta charset="utf-8">
+    <title>Bug Tracker</title>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 col-md-offset-4">
+            <h3>Add a new bug</h3>
+            <form method="post" action="addBug" role="form">
+                <table class="table">
+                    <tr>
+                        <td>Title:</td>
+                        <td>
+                            <input name="title" type="text" required class="form-control input-small"><br>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Description:</td>
+                        <td>
+                            <input name="description" type="text" required class="form-control input-small"><br>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Assignee:</td>
+                        <td>
+                            <input name="assignee" type="text" required class="form-control input-small">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <input class="btn" type="submit" value="Add">
+                            <button class="btn btn-warning" href="/index">Cancel</button>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>
+</body>

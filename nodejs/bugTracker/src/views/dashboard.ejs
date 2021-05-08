@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="./src/public/css/bootstrap.min.css">
+    <script src="./src/public/js/bootstrap.min.js"></script>
+    <script src="./src/public/js/jquery-3.6.0.min.js"></script>
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+
+    <!-- jQuery -->
+    <script type="text/javascript" charset="utf8" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+
+    <!-- DataTables -->
+    <script type="text/javascript" charset="utf8" src="http://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+    <meta charset="utf-8">
+    <title>Bug Tracker</title>
+    <script>
+        $(document).ready( () => {
+            $('#t').DataTable({
+                "lengthMenu": [
+                    [5,15,20,-1],
+                    [5,15,20,"ALL"]
+                ],
+                "pageLength": 5,
+                "columnDefs": [{
+                    'orderable':true,
+                    'targets':[2,3,5]
+                }, {
+                    "searchable":true,
+                    "targets":[2,3,5]
+                }],
+                "fnRowCallback":function (nRow, aData, isDisplayIndex, iDisplayIndexFull) {
+                    if (aData[5] === '0') {
+                        $('td',nRow).css("background-color", "Yellow");
+                    }
+                }
+            });
+        });
+
+
+    </script>
+</head>
+<body>
+<div class="container">
+        <div>
+            <a href="/add" role="button" id="add" class="btn">Add New Bug</a>
+        </div>
+    <h2>List of bugs</h2>
+    <div class="table-responsive">
+        <table id="t" class="display">
+            <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Assignee</th>
+                <th>Leftover Days</th>
+            </tr>
+            </thead>
+            <tbody>
+            <%for (let i=0;i<bugs.length;i++){%>
+            <tr>
+                <td><%=bugs[i].title%></td>
+                <td><%=bugs[i].description%></td>
+                <td><%=bugs[i].date.toLocaleDateString()%></td>
+                <td><%=bugs[i].date.toLocaleTimeString()%></td>
+                <td><%=bugs[i].assignee%></td>
+                <td><%=(t-bugs[i].date)/86400000>=3?0:Math.ceil(3-(t-bugs[i].date)/86400000)%></td>
+            </tr>
+            <%}%>
+            </tbody>
+            <tfoot class="thead-dark">
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Assignee</th>
+                    <th>Leftover Days</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+</body>

@@ -34,10 +34,10 @@ function calculateStatus(docs) {
     let status = [];
     for (let i=0;i<docs.length;i++) {
         let passed = (curtime - docs[i].date)/(1000*60*60*24);
-        if (passed <= 1) {
-            status.push('Order Placed');
-        } else if (passed <= 2) {
-            status.push('In Progress');
+        if (passed < 1) {
+            status.push('In progress');
+        } else if (passed < 2) {
+            status.push('Dispatched');
         } else {
             status.push('Delivered');
         }
@@ -53,14 +53,6 @@ app.get('/',(req, res) =>{
 app.get('/order',(req, res) =>{
     res.render('main',{items});
 });
-
-app.get('/error',(req, res) => {
-    res.render('error');
-})
-
-app.get('/success',(req, res) => {
-    res.render('success');
-})
 
 //route to add order
 app.post('/getUserInput',(req,res,next)=>{

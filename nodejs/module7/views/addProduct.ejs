@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Add Product</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- jQuery -->
+    <script type="text/javascript" charset="utf8" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+
+    <!-- DataTables -->
+    <script type="text/javascript" charset="utf8" src="http://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+    <!--===============================================================================================-->
+
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-offset-4">
+            <form method="post" action="/api/auth/addProduct">
+                <label>ID:</label><input type="text" required name="id"><br>
+                <label>Product:</label><input type="text" required name="product"><br>
+                <label>Data:</label><input type="text" name="data"><br>
+                <label>Price:</label><input type="number" required name="price"><br>
+                <input type="submit" value="Add Product">
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

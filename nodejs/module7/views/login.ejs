@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Login V2</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- jQuery -->
+    <script type="text/javascript" charset="utf8" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+
+   <!--===============================================================================================-->
+
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-offset-4">
+            <form method="POST" action="/api/auth/login">
+                <label>User Name:</label><input type="text" required name="username"><br>
+                <label>Password:</label><input type="password" required name="password"><br>
+                <input type="submit" value="Register">
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

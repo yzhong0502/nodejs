@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Users List</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+
+    <!-- jQuery -->
+    <script type="text/javascript" charset="utf8" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+
+    <!-- DataTables -->
+    <script type="text/javascript" charset="utf8" src="http://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+    <!--===============================================================================================-->
+
+    <!--===============================================================================================-->
+    <script>
+        $(document).ready( () => {
+            $('#t').DataTable({
+                "lengthMenu": [
+                    [5,15,20,-1],
+                    [5,15,20,"ALL"]
+                ],
+                "pageLength": 5,
+                "columnDefs": [{
+                    'orderable':true,
+                    'targets':[0,1]
+                }, {
+                    "searchable":true,
+                    "targets":[0,1]
+                }]
+            });
+        });
+    </script>
+</head>
+<body>
+<div class="container">
+    <div class="row text-center">
+        <h3>***Users List***</h3>
+        <table id='t' class="table-striped">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Type</th>
+            </tr>
+            </thead>
+            <tbody>
+            <%for (let i = 0; i < users.length; i++){%>
+            <tr>
+                <td><%=users[i]._id%></td>
+                <td><%=users[i].username%></td>
+                <td><%=users[i].type%></td>
+            </tr>
+            <%}%>
+            </tbody>
+        </table>
+        <a href="/admin">Go Back</a>
+    </div>
+</div>
+
+</body>
+</html>

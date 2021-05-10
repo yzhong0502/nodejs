@@ -17,13 +17,6 @@ app.get('/',(req,res) => {
     res.redirect('/index');
 })
 
-app.get('/addProduct',  (req, res) => {
-    if (localStorage.getItem('usertype')!=='Admin') {
-        res.redirect('/index');
-    } else {
-        res.render('addProduct');
-    }
-});
 
 // RETURNS ALL THE PRODUCTS IN THE DATABASE
 app.get('/index', function (req, res) {
@@ -33,6 +26,14 @@ app.get('/index', function (req, res) {
         res.render('index', {products, isLogin:isLogin, usertype:localStorage.getItem('usertype')});
     });
 });
+
+app.get('/login',(req,res) => {
+    res.render('login');
+})
+
+app.get('/register',(req,res) => {
+    res.render('register');
+})
 
 const server = app.listen(port, () => {
   console.log('Express server listening on port ' + port);

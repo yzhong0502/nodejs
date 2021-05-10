@@ -27,9 +27,11 @@ router.post('/register', (req, res)=>{
     if (username && password && username!=="" && password!=="") {
         //check if username exists
         User.findOne({username}, (err, user)=>{
-            if (err) return res.status(500).send('Error on the server.');
+            if (err) {
+                return res.render('message', {message:'Error on the server.', usertype:"Normal"});
+            }
             if (user) {
-                res.status(401).json({message:"Username already exists! Please input another one."})
+                return res.render('message', {message:"Username already exists! Please input another one.", usertype:"Normal"});
             } else {
                 const hashedPassword = bcrypt.hashSync(password, 8);
                 const type = "Normal";
@@ -38,20 +40,22 @@ router.post('/register', (req, res)=>{
                     password:hashedPassword,
                     type:type
                 }, (err, user) => {
-                    if (err) return res.status(500).send("There was a problem registering the user.")
-                    // create a token
-                    const token = jwt.sign({ id: user._id}, config.secret, {
-                        expiresIn: 86400 // expires in 24 hours
-                    });
-                    localStorage.setItem('authtoken', token);
-                    localStorage.setItem('usertype', type);
-                    const string = encodeURIComponent('Success Fully Register and Login');
-                    res.redirect('/?msg=' + string);
+                    if (err) {
+                        return res.render('message', {message:"There was a problem registering the user.", usertype:"Normal"});
+                    } else {
+                        // create a token
+                        const token = jwt.sign({ id: user._id, type: type}, config.secret, {
+                            expiresIn: 86400 // expires in 24 hours
+                        });
+                        localStorage.setItem('authtoken', token);
+                        localStorage.setItem('usertype', type);
+                        return res.render('message', {message:"Registered and logged in sucssessfully!", usertype:"Normal"});
+                    }
                 })
             }
         })
     } else {
-        res.status(401).json({message:"Please provide missing values."})
+        return res.render('message', {message:"Invalid input value!", usertype:"Normal"})
     }
   });
 
@@ -61,18 +65,23 @@ router.post('/login', (req, res) => {
     if (username && password && username!=="" && password!=="") {
         //check if username exists
         User.findOne({username}, (err, user)=>{
-            if (err) return res.status(500).send('Error on the server.');
+            if (err) {
+                res.render('message',{message:'Error on the server.', usertype:"Normal"});
+                return;
+            }
             if (!user) {
-                res.status(401).json({message:"Username and password combination is not correct."})
+                return res.render('message',{message:"Username and password combination is not correct.", usertype:"Normal"});
             } else {
                 const passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
-                if (!passwordIsValid) return res.status(401).send({ auth: false, token: null });
-                const token = jwt.sign({ id: user._id}, config.secret, {
+                if (!passwordIsValid) {
+                    return res.render('message',{message:"Username and password combination is not correct.", usertype:"Normal"});
+                }
+                const token = jwt.sign({ id: user._id, type: user.type}, config.secret, {
                     expiresIn: 86400 // expires in 24 hours
                 });
                 localStorage.setItem('authtoken', token);
                 localStorage.setItem('usertype', user.type);
-                if (usertype==="Admin") {
+                if (user.type==="Admin") {
                     res.redirect('/admin');
                 } else {
                     res.redirect('/index');
@@ -85,81 +94,76 @@ router.post('/login', (req, res) => {
     }
 });
 
-//add user
+//add user   api/auth/addUser
 router.post('/addUser', (req, res) => {
     //verify token
     const token = localStorage.getItem('authtoken');
-    if (!token) return res.status(401).send({auth: false, message: 'No token provided.'});
-
+    if (!token) return res.render('message',{message: 'No token provided.',usertype:'Normal'});
     jwt.verify(token, config.secret, function (err, decoded) {
-        if (err) return res.status(500).send({auth: false, message: 'Failed to authenticate token.'});
+        if (err) return res.render('message',{message: 'Failed to authenticate token.',usertype:'Normal'});
         //check the type of user
-        User.findById(decoded.id, {password: 0}, function (err, user) {
-            if (err) return res.status(500).send("There was a problem finding the user.");
-            if (!user) return res.status(404).send("No user found.");
-            if (user.type !== 'Admin') {
-                return res.status(500).send({auth: false, message: 'No permission.'});
-            }
-
+        const usertype = decoded.type;
+        if (usertype!=='Admin') {
+            return res.render('message',{message: 'No permission to the data.',usertype:usertype});
+        } else {
             //check if the username already exists
             User.findOne({username: req.body.username}, (err, user) => {
-                if (err) return res.status(500).send('Error on the server.');
-                if (user) {
-                    const string = encodeURIComponent('Username already exists! Please input another username!');
-                    res.redirect('/?valid=' + string);
+                if (err) {
+                    return res.render('message',{message: 'Error on the server.',usertype:usertype});
                 } else {
-                    const hashedPassword = bcrypt.hashSync(req.body.password, 8);
-                    User.create({
+                    if (user) {
+                        return res.render('message',{message: "Username already exists! Please input another one.",usertype:usertype});
+                    } else {
+                        const hashedPassword = bcrypt.hashSync(req.body.password, 8);
+                        User.create({
                             username: req.body.username,
                             password: hashedPassword,
                             type: req.body.type
-                        }, (err, user)=> {
-                            if (err) return res.status(500).send("There was a problem registering the user.")
-                            const string = encodeURIComponent('Success Fully Added User');
-                            res.redirect('/?msg=' + string);
+                        }, (err, user) => {
+                            if (err) return res.render('message',{message: "There was a problem registering the user.",usertype:usertype});
+                            else return res.render('message',{message: 'User created successfully!',usertype:usertype});
                         });
+                    }
                 }
             });
-        });
+        }
+
     });
 })
 
+//list all users   api/auth/users
 router.get('/users', (req,res) => {
     //verify token
     const token = localStorage.getItem('authtoken');
-    if (!token) return res.status(401).send({auth: false, message: 'No token provided.'});
+    if (!token) return res.render('message',{message: 'No token provided.',usertype:'Normal'});
     jwt.verify(token, config.secret, function (err, decoded) {
-        if (err) return res.status(500).send({auth: false, message: 'Failed to authenticate token.'});
+        if (err) return res.render('message',{message: 'Failed to authenticate token.',usertype:'Normal'});
         //check the type of user
-        User.findById(decoded.id, { password: 0 }, function (err, user) {
-            if (err) return res.status(500).send("There was a problem finding the user.");
-            if (!user) return res.status(404).send("No user found.");
-            if (user.type!=='Admin') {
-                return res.status(500).send({auth: false, message: 'No permission to the data.'});
-            }
+        const usertype = decoded.type;
+        if (usertype!=='Admin') {
+            res.render('message',{message: 'No permission to the data.',usertype:usertype});
+        } else {
             //get user list
             User.find((err, users) => {
-                if (err) return res.status(500).send("There was a problem finding the users.");
+                if (err) return res.render('message',{message:"There was a problem finding the users.",usertype:usertype});
                 res.render('userList', {users});
             })
-        });
+        }
     })
 });
 
-// CREATE A PRODUCT IN THE DATABASE
+// api/auth/addProduct
 router.post('/addProduct', function (req, res) {
     //verify token
     const token = localStorage.getItem('authtoken');
-    if (!token) return res.status(401).send({auth: false, message: 'No token provided.'});
+    if (!token) return res.render('message',{message: 'No token provided.',usertype:'Normal'});
     jwt.verify(token, config.secret, function (err, decoded) {
-        if (err) return res.status(500).send({auth: false, message: 'Failed to authenticate token.'});
+        if (err) return res.render('message',{message: 'Failed to authenticate token.',usertype:'Normal'});
         //check the type of user
-        User.findById(decoded.id, {password: 0}, function (err, user) {
-            if (err) return res.status(500).send("There was a problem finding the user.");
-            if (!user) return res.status(404).send("No user found.");
-            if (user.type !== 'Admin') {
-                return res.status(500).send({auth: false, message: 'No permission to the data.'});
-            }
+        const usertype = decoded.type;
+        if (usertype !== 'Admin') {
+            return res.render('message',{message: 'No permission to the data.',usertype:usertype});
+        } else {
             //add product
             let product = {
                 id: req.body.id,
@@ -167,26 +171,27 @@ router.post('/addProduct', function (req, res) {
                 data: req.body.data,
                 price: req.body.price
             }
+
             console.log(product);
             //check if the id is used in db
-            Product.find({id: product.id}, (err, data) => {
+            Product.findOne({id: product.id}, (err, data) => {
                 if (err) {
-                    res.send("Error happened.")
+                    return res.render('message',{message: "There was a problem happened in server.",usertype:usertype});
                 }
                 if (data) {
-                    res.send("The ID already exists. Please input another ID.")
+                    return res.render('message',{message:"The product ID already exists. Please input another ID.", usertype:usertype});
                 } else {
                     Product.create(product, (err, data) => {
                         if (err) {
-                            res.status(500).send(err);
+                            return res.render('message',{message:"There was a problem happened in server.", usertype:usertype});
                         } else {
-                            res.send('Product inserted successfully!');
+                            return res.render('message',{message:'Product created successfully!', usertype:usertype});
                         }
                     });
                 }
-                res.redirect('/admin');
             });
-        });
+
+        }
     });
 });
 

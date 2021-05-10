@@ -15,16 +15,14 @@
 <body>
 <div class="container">
     <div class="row">
-        <div class="col-md-offset-4">
-            <form method="post" action="/api/auth/addUser">
-                <label>User Name:</label><input type="text" required name="username"><br>
-                <label>Password:</label><input type="password" required name="password"><br>
-                <label>Type:</label><br>
-                <input type="radio" name="type" value="Admin" checked="checked">Admin<br>
-                <input type="radio" name="type" value="Normal">Normal<br>
-
-                <input type="submit" value="Add User">
-            </form>
+        <div class="col">
+            <h3><%=message%></h3>
+        </div>
+        <div>
+            <a href="/index">Shopping List</a><br>
+            <%if (usertype==="Admin"){%>
+            <a href="/admin">Admin</a>
+            <%}%>
         </div>
     </div>
 </div>

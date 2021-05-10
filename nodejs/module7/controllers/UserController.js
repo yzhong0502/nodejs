@@ -12,20 +12,11 @@ const User = require('../models/user');
 
 router.get('/admin', (req, res) => {
     //check if admin
-    console.log(localStorage.getItem('usertype')!=='Admin');
     if (localStorage.getItem('usertype')!=='Admin') {
         res.redirect('/index');
     } else {
         res.render('admin');
     }
-})
-
-router.get('/login',(req,res) => {
-    res.render('login');
-})
-
-router.get('/register',(req,res) => {
-    res.render('register');
 })
 
 router.get('/addUser', (req, res) => {
@@ -37,6 +28,14 @@ router.get('/addUser', (req, res) => {
     }
 })
 
+router.get('/addProduct', (req, res) => {
+    //check if admin
+    if (localStorage.getItem('usertype')!=='Admin') {
+        res.redirect('/index');
+    } else {
+        res.render('addProduct');
+    }
+})
 
  router.get('/logout', (req,res) => {
      localStorage.removeItem('authtoken');

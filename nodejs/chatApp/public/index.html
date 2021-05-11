@@ -1,45 +1,51 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Chat App</title>
-    <script>
-        //handel ui
-        $(()=>{
-            let socket = io.connect('localhost:3000/')
-            //set nickname
-            $('#nick').on('click', ()=>{
-                socket.emit('nick', $('#nickText').val());
-            });
+    <title>Socket.IO chat</title>
+    <style>
+        body { margin: 0; padding-bottom: 3rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
 
-            //send chat message
-            $('#chat').on('click',()=>{
-                socket.emit('chat',{
-                    message:$('#chatText').val()
-                });
-            });
-        });
+        #form { background: rgba(0, 0, 0, 0.15); padding: 0.25rem; position: fixed; bottom: 0; left: 0; right: 0; display: flex; height: 3rem; box-sizing: border-box; backdrop-filter: blur(10px); }
+        .input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem; margin: 0.25rem; }
+        .input:focus { outline: none; }
+        #form > button { background: green; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 3px; outline: none; color: #fff; }
 
-    </script>
+        #messages { list-style-type: none; margin: 0; padding: 0; }
+        #messages > li { padding: 0.5rem 1rem; }
+        #messages > li:nth-child(odd) { background: #efefef; }
+    </style>
 </head>
 <body>
-<ul class="pages">
-    <li class="chat page">
-        <div class="chatArea">
-            <ul class="messages"></ul>
-        </div>
-        <input class="inputMessage" placeholder="Type here..."/>
-    </li>
-    <li class="login page">
-        <div class="form">
-            <h3 class="title">What's your nickname?</h3>
-            <input class="usernameInput" type="text" maxlength="14" />
-        </div>
-    </li>
-</ul>
-
-<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+<ul id="messages"></ul>
+<form id="form" action="">
+    Nickname:<input class="input" id="nickname">
+    <input class="input" id="message" autocomplete="off" /><button>Send</button>
+</form>
 <script src="/socket.io/socket.io.js"></script>
-<script src="/js/main.js"></script>
+<script>
+    let socket = io();
+    let form = document.getElementById('form');
+    let msg = document.getElementById('message');
+    let messages = document.getElementById('messages');
+    let nickname = document.getElementById('nickname');
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        if (msg.value) {
+            console.log(nickname.value);
+            let nick = nickname.value;
+            if (!nick) nick="Anonymous";
+            socket.emit('chat message', nick, msg.value, new Date());
+            msg.value = '';
+        }
+    });
+
+    socket.on('chat message', (n, m, t) => {
+        let item = document.createElement('li');
+        item.textContent = n + ": "+ m + " (Delievered at " + t.toLocaleString() + ")";
+        messages.appendChild(item);
+        window.scrollTo(0, document.body.scrollHeight);
+    });
+</script>
 </body>
 </html>
